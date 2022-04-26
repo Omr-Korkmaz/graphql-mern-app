@@ -1,5 +1,5 @@
 const express = require("express");
-const graphqlHTTP = require('express-graphql'); //convention name
+const {graphqlHTTP} = require('express-graphql');
 const cors = require("cors");
 
 
