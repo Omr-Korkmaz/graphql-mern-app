@@ -27,13 +27,6 @@ const BookType = new GraphQLObjectType({
                 return Author.find(author=>author.id===parent.authorId);
             }
         },
-        library:{
-            type: LibraryType,
-            resolve(parent, args){
-                return Library.find(library=>library.id===parent.libraryId);
-            }
-
-        }
     })
 });
 
@@ -140,6 +133,7 @@ const Mutation = new GraphQLObjectType({
             type: LibraryType,
             args: {
                 name: { type: GraphQLString },
+                bookId: { type: new GraphQLNonNull(GraphQLID) }
             },
             resolve(parent, args){
                 let library = new Library({
