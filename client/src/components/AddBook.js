@@ -1,85 +1,77 @@
 import React from "react";
 import { useQuery, gql, useMutation } from "@apollo/client";
 import { useState } from "react";
-
-const getAuthorsQuery = gql`
-  query GetAuthor {
-    authors {
-      name
-      id
-    }
-  }
-`;
-
-
-const ADD_BOOK = gql`
-  mutation AddBook($name: String!, $genre:String!, $authorId:String!) {
-    addBook(name: $name, genre:$genre, authorId:$authorId ) {
-      id
-      name
-      genre
-      authorId
-    }
-  }
-`;
-
-
-
+import { ADD_BOOK, GET_AUTHOR } from "../queries";
 
 const AddBook = () => {
+  const [bookInfo, setBookInfo] = useState({
+    name: "",
+    genre: "",
+    authorId: "",
+  });
 
+  const [addBook, { data, loading, error }] = useMutation(ADD_BOOK);
+  // if (loading) return 'Submitting...';
+  // if (error) return 'Submission error!';
+  // console.log("DATA", data);
 
+  const ShowAuthors = () => {
+    const { loading, error, data } = useQuery(GET_AUTHOR);
 
-    const [Name, setName]=useState('');
-    const [Genre, setGenre]=useState('');
-    const [AuthorId, setAuthorId]=useState('');
+    if (loading) return <option disabled>Loading authors</option>;
 
+    if (error) return <p>Error :(</p>;
 
+    return data.authors.map((author) => {
+      return (
+        <option key={author.id} value={author.id}>
+          {author.name}
+        </option>
+      );
+    });
+  };
 
+  const SubmitForm = (e) => {
+    e.preventDefault();
 
-  const { loading, error, data } = useQuery(getAuthorsQuery);
-
-  if (loading) return <option disabled>Loading authors</option>;
-
-  if (error) return <p>Error :(</p>;
-
-  const HandleSubmit = (event)=>{
-      event.preventDefault();
-      console.log(Name, Genre, AuthorId)
-
-
-   
-      addBook({ variables: { name: setName, genre:setGenre, AuthorId:setAuthorId } });
-      }
-
-  
+    addBook({
+      variables: {
+        name: bookInfo.name,
+        genre: bookInfo.genre,
+        authorId: bookInfo.authorId,
+      },
+    });
+  };
 
   return (
-    <form id="add-book" onSubmit={HandleSubmit}>
+    <form id="add-book" onSubmit={SubmitForm}>
       <div className="field">
         <label>Book name:</label>
-        <input type="text" onChange={(e)=>setName(e.target.value)} />
+        <input
+          type="text"
+          onChange={(e) => setBookInfo({ ...bookInfo, name: e.target.value })}
+        />
       </div>
       <div className="field">
         <label>Genre:</label>
-        <input type="text" onChange={(e)=>setGenre(e.target.value)} />
+        <input
+          type="text"
+          onChange={(e) => setBookInfo({ ...bookInfo, genre: e.target.value })}
+        />
       </div>
       <div className="field">
         <label>Author:</label>
-        <select onChange={(e)=>setAuthorId(e.target.value)}>
+        <select
+          onChange={(e) =>
+            setBookInfo({ ...bookInfo, authorId: e.target.value })
+          }
+        >
           <option>Select author</option>
-          {data.authors.map((author) => {
-            return (
-              <option key={author.id} value={author.id}>
-                {author.name}
-              </option>
-            );
-          })}
+          {ShowAuthors()}
         </select>
       </div>
-      <button>Add</button>
+      <button>ADD</button>
     </form>
   );
 };
-
 export default AddBook;

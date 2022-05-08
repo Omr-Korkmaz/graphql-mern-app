@@ -1,5 +1,5 @@
 import "./App.css";
-import Book from "./components/Book";
+import Book from "./components/BookList";
 import {
   ApolloClient,
   InMemoryCache,
