@@ -9,7 +9,7 @@ const GET_AUTHOR = gql`
   }
 `;
 
-const GET_BOOK = gql`
+const GET_BOOKS = gql`
   query GetBook {
     books {
       id
@@ -27,4 +27,24 @@ const ADD_BOOK = gql`
   }
 `;
 
-export { GET_AUTHOR, GET_BOOK, ADD_BOOK };
+// String is not work???
+const GET_BOOK = gql`
+  query GetBook($bookId: ID) {
+    book(Id: $bookId) {
+      id
+      name
+      genre
+      author {
+        id
+        name
+        age
+        books {
+          name
+          id
+        }
+      }
+    }
+  }
+`;
+
+export { GET_AUTHOR, GET_BOOKS, ADD_BOOK, GET_BOOK };

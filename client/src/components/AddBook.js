@@ -1,7 +1,7 @@
 import React from "react";
 import { useQuery, gql, useMutation } from "@apollo/client";
 import { useState } from "react";
-import { ADD_BOOK, GET_AUTHOR } from "../queries";
+import { ADD_BOOK, GET_AUTHOR, GET_BOOKS } from "../queries";
 
 const AddBook = () => {
   const [bookInfo, setBookInfo] = useState({
@@ -13,7 +13,6 @@ const AddBook = () => {
   const [addBook, { data, loading, error }] = useMutation(ADD_BOOK);
   // if (loading) return 'Submitting...';
   // if (error) return 'Submission error!';
-  // console.log("DATA", data);
 
   const ShowAuthors = () => {
     const { loading, error, data } = useQuery(GET_AUTHOR);
@@ -40,6 +39,7 @@ const AddBook = () => {
         genre: bookInfo.genre,
         authorId: bookInfo.authorId,
       },
+      refetchQueries: [{ query: GET_BOOKS }],
     });
   };
 
